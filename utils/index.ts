@@ -1,5 +1,6 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs/promises';
+import * as jwt from 'jsonwebtoken'
 
 export class Utils {
   // eslint-disable-next-line no-useless-escape
@@ -32,4 +33,12 @@ export class Utils {
   public static isEmail(mail: string) : boolean {
     return this.EMAIL_PATTERN.test(mail);
   }
+
+  public static jwtVerify(token: string, key: string) {
+    try {
+      return jwt.verify(token, key);
+    } catch (err) { 
+      return { error: { message: err } }
+    }
+  } 
 }
