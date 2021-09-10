@@ -5,8 +5,8 @@ import fetch from 'cross-fetch';
 import config from 'config/index';
 
 const routes = {
-    users: `${config.usersApiUrl}/api/v1/users`,
-    userInfoByCredentials: `${config.usersApiUrl}/api/v1/users/byCredentials`,
+    users: `${config.usersApiUrl}/api/v1/users/`,
+    userInfoByEmail: `${config.usersApiUrl}/api/v1/users/email`,
   };
 
 @Injectable()
@@ -26,26 +26,13 @@ export class AuthService {
         return data;
     }
 
-    async getUserByCredentials(email: string, password: string) : Promise<any> {
-      const request = await fetch(routes.userInfoByCredentials, {
-        method: 'POST',
-        body: JSON.stringify({email, password}),
-        headers: {
-          'Content-Type': 'application/json',
-          // Authorization: token,
-        },
-      })
+    async getUserByEmail(email: string, password: string) : Promise<any> {
+      const request = await fetch(`${routes.userInfoByEmail}?email=${email}`)
       return request.json()
     }
 
-    async getUser(id) : Promise<any>{
-      const request = await fetch(`${routes.users}?id=${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer sdadasd',
-        },
-      })
+    async getUser(id: number) : Promise<any>{
+      const request = await fetch(`${routes.users + id}`)
       return request.json()
     }
 
