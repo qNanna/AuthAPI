@@ -6,6 +6,7 @@ import config from 'config/index';
 
 const routes = {
     users: `${config.usersApiUrl}/api/v1/users/`,
+    tokens: `${config.usersApiUrl}/api/v1/tokens/`,
     userInfoByEmail: `${config.usersApiUrl}/api/v1/users/email`,
   };
 
@@ -27,24 +28,28 @@ export class AuthService {
     }
 
     async getUserByEmail(email: string, password: string) : Promise<any> {
-      const request = await fetch(`${routes.userInfoByEmail}?email=${email}`)
-      return request.json()
+      const request = await fetch(`${routes.userInfoByEmail}?email=${email}`);
+      return request.json();
     }
 
     async getUser(id: number) : Promise<any>{
-      const request = await fetch(`${routes.users + id}`)
-      return request.json()
+      const request = await fetch(`${routes.users + id}`);
+      return request.json();
+    }
+
+    async getToken(id: number) : Promise<any> {
+      const request = await fetch(`${routes.tokens}userid?id=${id}`);
+      return request.json();
     }
 
     async updateToken(refreshToken: string) : Promise<any> {
-      const request = await fetch(routes.users, {
+      const request = await fetch(routes.tokens, {
         method: 'PATCH',
         body: JSON.stringify({ refreshToken }),
         headers: {
           'Content-Type': 'application/json',
-          // Authorization: token,
         },
-      })
-      return request.json()
+      });
+      return request.json();
     }
 }

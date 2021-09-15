@@ -6,7 +6,7 @@ import config from 'config/index';
 import { Utils as utils } from 'utils/index';
 import { AuthService } from 'src/services/auth.service';
 
-@Controller('api/v1/auth')
+@Controller('api/v1')
 export class AuthController {
   constructor(private readonly authService: AuthService){}
     @Post('/signIn')
@@ -28,7 +28,7 @@ export class AuthController {
         const { token } = this.authService.auth(user);
         const refreshToken = await this.authService.createRefreshToken(user);
         await this.authService.updateToken(refreshToken);
-
+        
         res.send({ acessToken: token, refreshToken });
       } catch (err) {
         console.error(chalk.red(err));
@@ -52,7 +52,9 @@ export class AuthController {
         }
 
         const user = await this.authService.getUser(id);
-        if (!user || user.token !== refreshToken) { 
+        const { token } = await this.authService.getToken(id);
+
+        if (!user || token !== refreshToken) { 
           res.status(403).json('Refresh token is not in database!');
           return;
         }
