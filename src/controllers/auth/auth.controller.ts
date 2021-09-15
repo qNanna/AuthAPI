@@ -19,9 +19,10 @@ export class AuthController {
             return;
         }
         
+        const encryptedPass: string = utils.encryptData(password, config.cryptoSecretKey);
         const user = await this.usersService.getUserByEmail(email.toLowerCase());
-        if (!user.id) {
-          res.status(400).json(user);
+        if (!user.id || user.password !== encryptedPass) {
+          res.status(400).json('User not found');
           return;
         }
         
