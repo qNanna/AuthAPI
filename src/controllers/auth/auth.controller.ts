@@ -5,10 +5,11 @@ import * as chalk from 'chalk';
 import config from 'config/index';
 import { Utils as utils } from 'utils/index';
 import { AuthService } from 'src/services/auth.service';
+import { UsersService } from 'src/services/users.service';
 
 @Controller('api/v1')
 export class AuthController {
-  constructor(private readonly authService: AuthService){}
+  constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
     @Post('/signIn')
     async login(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction) {
       try {
@@ -18,8 +19,7 @@ export class AuthController {
             return;
         }
         
-        const encryptedPass = utils.encryptData(password, config.cryptoSecretKey);
-        const user = await this.authService.getUserByEmail(email.toLowerCase(), encryptedPass);
+        const user = await this.usersService.getUserByEmail(email.toLowerCase());
         if (!user.id) {
           res.status(400).json(user);
           return;
@@ -27,7 +27,7 @@ export class AuthController {
         
         const { token } = this.authService.auth(user);
         const refreshToken = await this.authService.createRefreshToken(user);
-        await this.authService.updateToken(refreshToken);
+        await this.authService.updateToken(refreshToken, user.id);
         
         res.send({ acessToken: token, refreshToken });
       } catch (err) {
@@ -51,8 +51,8 @@ export class AuthController {
           return;
         }
 
-        const user = await this.authService.getUser(id);
-        const { token } = await this.authService.getToken(id);
+        const user = await this.usersService.getUser(id);
+        const { token } = await this.authService.findToken(id, 'userId');
 
         if (!user || token !== refreshToken) { 
           res.status(403).json('Refresh token is not in database!');
