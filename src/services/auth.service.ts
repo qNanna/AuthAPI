@@ -23,8 +23,7 @@ export class AuthService {
     }
 
     async updateToken(token: string, id: string) : Promise<any> {
-      const result = await dbTokens.update(token, id);
-      return result;
+      return dbTokens.update(token, id);
     }
   
     async findToken(userId: string, prop: string) : Promise<any> {

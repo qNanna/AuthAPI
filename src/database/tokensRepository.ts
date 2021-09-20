@@ -14,7 +14,7 @@ class TokensRepository {
   }
 
   async update(token: string, id: string) : Promise<any> {
-      return db('tokens').where('userId', id).update('token', token);
+      return db('tokens').where('user_id', id).update('token', token);
   }
 }
 

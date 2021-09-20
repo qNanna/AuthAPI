@@ -7,7 +7,7 @@ import { Utils as utils } from 'utils/index';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/services/users.service';
 
-@Controller('api/v1')
+@Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
     @Post('/signIn')
@@ -27,8 +27,10 @@ export class AuthController {
         }
         
         const { token } = this.authService.auth(user);
-        const refreshToken = await this.authService.createRefreshToken(user);
-        await this.authService.updateToken(refreshToken, user.id);
+        const refreshToken: string = await this.authService.createRefreshToken(user);
+
+        const result = await this.authService.updateToken(refreshToken, user.id);
+        !result && await this.authService.insertToken({ user_id: user.id, token: refreshToken });
         
         res.send({ acessToken: token, refreshToken });
       } catch (err) {
