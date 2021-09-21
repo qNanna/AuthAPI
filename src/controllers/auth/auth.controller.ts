@@ -21,16 +21,18 @@ export class AuthController {
         
         const encryptedPass: string = utils.encryptData(password, config.cryptoSecretKey);
         const user = await this.usersService.getUserByEmail(email.toLowerCase());
-        if (!user.id || user.password !== encryptedPass) {
+        if (!user?.id || user?.password !== encryptedPass) {
           res.status(400).json('User not found');
           return;
         }
         
         const { token } = this.authService.auth(user);
-        const refreshToken: string = await this.authService.createRefreshToken(user);
+        const refreshToken = this.authService.createRefreshToken(user);
 
         const result = await this.authService.updateToken(refreshToken, user.id);
-        !result && await this.authService.insertToken({ user_id: user.id, token: refreshToken });
+        if (!result) {
+          await this.authService.insertToken({ user_id: user.id, token: refreshToken });
+        }
         
         res.send({ acessToken: token, refreshToken });
       } catch (err) {

@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import fetch from 'cross-fetch';
 
 import config from 'config/index';
 import dbTokens from 'src/database/tokensRepository';
 
+
+// interface IUserWithToken extends  {
+
+// }
+
 @Injectable()
 export class AuthService {
-    createRefreshToken(user: any) : any {
+    createRefreshToken(user: any) : string {
       const expiredAt = new Date();
       expiredAt.setSeconds(expiredAt.getSeconds() + parseInt(config.refreshTokenLife));
       return jwt.sign({ id: user.id }, config.jwtTokenKey, { expiresIn: config.refreshTokenLife });
