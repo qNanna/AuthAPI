@@ -31,9 +31,11 @@
     "dotenv": "^10.0.0",
     "dotenv-safe": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
+    "knex": "^0.95.11",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
